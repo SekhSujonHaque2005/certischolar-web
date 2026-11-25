@@ -2,27 +2,146 @@ import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
+import {
+  HeroOut,
+  FloatDown,
+  RevealMedia,
+  ZoomMedia,
+  RiseCard,
+  ClarityReveal,
+  SheetSection,
+} from '../../components/framer/MotionPrimitives';
+import {
+  Glyph,
+  Art,
+  OrbitRings,
+  CountUpNumber,
+  Eyebrow,
+  ArrowChip,
+  RollingButton,
+} from '../../components/framer/FramerArtwork';
 
-// Reusable Arrow Up-Right Icon matching Framer LEROVA
-function ArrowUpRightIcon({ className = "w-3.5 h-3.5" }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="7" y1="17" x2="17" y2="7"></line>
-      <polyline points="7 7 17 7 17 17"></polyline>
-    </svg>
-  );
-}
+const STORY_STATS = [
+  {
+    id: 'stat-01',
+    tag: '{ 01 }',
+    glyph: 'burst',
+    value: 133,
+    suffix: '',
+    label: 'Functional Requirements*',
+    sublabel: 'M0 to M20 Scope',
+    variant: 'A',
+  },
+  {
+    id: 'stat-02',
+    tag: '{ 02 }',
+    glyph: 'asterisk',
+    value: 345,
+    suffix: '',
+    label: 'Acceptance Tests*',
+    sublabel: 'Traceable Verification',
+    variant: 'B',
+  },
+  {
+    id: 'stat-03',
+    tag: '{ 03 }',
+    glyph: 'sun',
+    value: 90,
+    suffix: '%+',
+    label: 'Field Extraction Target*',
+    sublabel: 'P12 Pilot Benchmark',
+    variant: 'C',
+  },
+];
 
-// Framer Orange Spark Icon
-function OrangeSpark({ className = "w-3.5 h-3.5" }) {
-  return (
-    <div className={`${className} shrink-0 flex items-center justify-center`}>
-      <svg viewBox="0 0 100 100" className="w-full h-full fill-[#ff5a2b] overflow-visible">
-        <path d="M50 4C53 34 66 47 96 50C66 53 53 66 50 96C47 66 34 53 4 50C34 47 47 34 50 4Z" />
-      </svg>
-    </div>
-  );
-}
+const CORE_VALUES = [
+  {
+    id: 'val-01',
+    tag: '{ value 01 }',
+    shape: 'burst',
+    title: 'Explainable Rules',
+    desc: 'Every eligibility score cites published LPU circular clauses, weightings, and effective ruleset versions.',
+    variant: 'A',
+  },
+  {
+    id: 'val-02',
+    tag: '{ value 02 }',
+    shape: 'grid',
+    title: 'Evidence Precision',
+    desc: 'Pre-flight blur detection and bounding-box OCR keep marksheet and income extraction verifiable.',
+    variant: 'B',
+  },
+  {
+    id: 'val-03',
+    tag: '{ value 03 }',
+    shape: 'wave',
+    title: 'Human Escalation',
+    desc: 'Uncertain fields route cleanly to M5 split-screen reviewers rather than silent automated rejection.',
+    variant: 'C',
+  },
+  {
+    id: 'val-04',
+    tag: '{ value 04 }',
+    shape: 'bloom',
+    title: 'Equitable Access',
+    desc: 'Multilingual guidance and clear upload feedback remove avoidable barriers for first-time applicants.',
+    variant: 'D',
+  },
+  {
+    id: 'val-05',
+    tag: '{ value 05 }',
+    shape: 'orbit',
+    title: 'DPDP Custody',
+    desc: 'Student records remain encrypted with role-scoped masking and immutable institutional audit logs.',
+    variant: 'A',
+  },
+];
+
+const APPROACH_CHIPS = [
+  'Rule Versioning',
+  'Pre-Flight OCR',
+  'Quorum Sign-Off',
+  'DPDP Audit',
+];
+
+const STAKEHOLDERS = [
+  {
+    name: 'Sekh Sujon Haque',
+    role: 'Project Proponent & Architect',
+    tag: '{ architecture }',
+    image: '/images/mentor-1.jpg',
+    variant: 'A',
+  },
+  {
+    name: 'Document Verifier Role',
+    role: 'M5 Split-Screen Review (SRS 2.4)',
+    tag: '{ verification }',
+    image: '/images/mentor-2.jpg',
+    variant: 'B',
+  },
+  {
+    name: 'Policy Owner Role',
+    role: 'Ruleset & Circular Approval (SRS 2.4)',
+    tag: '{ policy }',
+    image: '/images/mentor-3.jpg',
+    variant: 'C',
+  },
+  {
+    name: 'Committee Chair Role',
+    role: 'Quorum Deliberation & Sign-Off (SRS 2.4)',
+    tag: '{ committee }',
+    image: '/images/mentor-4.jpg',
+    variant: 'D',
+  },
+];
+
+const INSTITUTION_REASONS = [
+  'Pre-flight scan quality checks catch blur and low DPI before student submission',
+  'Multi-board marksheet normalization and bounding-box OCR streamline M5 review',
+  'Versioned deterministic rulesets keep every eligibility calculation reproducible',
+  'Tripartite committee quorum records formal votes with tamper-evident audit logs',
+  'DPDP Act 2023 custody enforces encrypted storage and role-scoped field masking',
+];
 
 export default function AboutPage({
   onNavigateHome = () => {},
@@ -33,165 +152,26 @@ export default function AboutPage({
 }) {
   const [language, setLanguage] = useState('EN');
   const [fontScale, setFontScale] = useState(100);
-  const [activeApproachTab, setActiveApproachTab] = useState(0);
-
-  // Counter animations for Section 2
-  const [counter1, setCounter1] = useState(0);
-  const [counter2, setCounter2] = useState(0);
-  const [counter3, setCounter3] = useState(0);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
-    // Animate stats counter
-    const dur = 1400;
-    const steps = 30;
-    const interval = dur / steps;
-    let step = 0;
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      setCounter1(Math.round(progress * 10));
-      setCounter2(Math.round(progress * 42));
-      setCounter3(Math.round(progress * 99.4 * 10) / 10);
-      if (step >= steps) clearInterval(timer);
-    }, interval);
-
-    return () => clearInterval(timer);
+    window.scrollTo(0, 0);
   }, []);
 
   const rootScaleStyle = {
     fontSize: fontScale === 90 ? '90%' : fontScale === 110 ? '110%' : '100%',
   };
 
-  const CORE_VALUES = [
-    {
-      id: "val-1",
-      tag: "{ value 01 }",
-      title: "Curiosity First",
-      desc: "We encourage questions, exploration, and lifelong learning across every academic field.",
-      glyph: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[#ff5a2b] fill-none" strokeWidth="2" strokeLinecap="round">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" />
-        </svg>
-      )
-    },
-    {
-      id: "val-2",
-      tag: "{ value 02 }",
-      title: "Practical by Design",
-      desc: "We focus on knowledge and automated tools that students and faculty can put into action immediately.",
-      glyph: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[#ff5a2b] fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="7" height="7" rx="1.5" />
-          <rect x="14" y="3" width="7" height="7" rx="1.5" />
-          <rect x="14" y="14" width="7" height="7" rx="1.5" />
-          <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        </svg>
-      )
-    },
-    {
-      id: "val-3",
-      tag: "{ value 03 }",
-      title: "Progress Over Perfection",
-      desc: "Small, consistent improvements in verification speed create lasting institutional trust.",
-      glyph: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[#ff5a2b] fill-none" strokeWidth="2" strokeLinecap="round">
-          <path d="M2 12c4-4 8-4 12 0s8 4 12 0" />
-          <path d="M2 17c4-4 8-4 12 0s8 4 12 0" />
-        </svg>
-      )
-    },
-    {
-      id: "val-4",
-      tag: "{ value 04 }",
-      title: "Aid for Everyone",
-      desc: "We aim to make scholarship opportunities welcoming, fair, and accessible to every background.",
-      glyph: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[#ff5a2b] fill-none" strokeWidth="2" strokeLinecap="round">
-          <circle cx="12" cy="12" r="8" />
-          <path d="M12 4a8 8 0 0 1 8 8M12 20a8 8 0 0 1-8-8" strokeDasharray="3 3" />
-        </svg>
-      )
-    },
-    {
-      id: "val-5",
-      tag: "{ value 05 }",
-      title: "Always Improving",
-      desc: "We believe higher education and institutional governance must evolve alongside the world.",
-      glyph: (
-        <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[#ff5a2b] fill-none" strokeWidth="2" strokeLinecap="round">
-          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30 12 12)" />
-          <circle cx="12" cy="12" r="3" fill="#ff5a2b" />
-        </svg>
-      )
-    }
-  ];
-
-  const APPROACH_PRINCIPLES = [
-    {
-      title: "Flexibility & Mobile Ease",
-      desc: "Designed to operate seamlessly on any smartphone with client-side camera scan quality feedback before upload."
-    },
-    {
-      title: "Clear Eligibility Paths",
-      desc: "Itemized criteria breakdowns showing exactly how board percentiles, entrance test ranks, and income cutoffs qualify."
-    },
-    {
-      title: "Practical Verification",
-      desc: "Automated OCR extraction and multi-board normalization eliminating manual paperwork and physical university queues."
-    },
-    {
-      title: "Steady Progress & Direct Credit",
-      desc: "Real-time application tracking with sanctioned fee concessions credited directly to the university SIS tuition ledger."
-    }
-  ];
-
-  const TEAM_MEMBERS = [
-    {
-      name: "Dr. Olivia Bennett",
-      role: "Dean of Student Scholarships",
-      dept: "Division of Student Welfare, LPU",
-      tag: "{ learning }",
-      image: "/images/mentor-1.jpg"
-    },
-    {
-      name: "Noah Fischer",
-      role: "Curriculum & Evaluation Lead",
-      dept: "Academic Board of Accreditations",
-      tag: "{ curriculum }",
-      image: "/images/mentor-2.jpg"
-    },
-    {
-      name: "Maya Okafor",
-      role: "Student Community Coordinator",
-      dept: "Scholarship Grievance & Welfare Cell",
-      tag: "{ community }",
-      image: "/images/mentor-3.jpg"
-    },
-    {
-      name: "Leo Tanaka",
-      role: "Platform Operations Director",
-      dept: "Institutional Directorate of Intake",
-      tag: "{ product }",
-      image: "/images/mentor-4.jpg"
-    }
-  ];
-
-  const WHY_CHOOSE_ITEMS = [
-    "Flexible, transparent application experience with zero physical paperwork",
-    "Instant OCR marksheet extraction eliminating manual data entry errors",
-    "Deterministic, 100% explainable eligibility scoring backed by circulars",
-    "DPDP Act 2023 certified encrypted student document vault",
-    "A supportive institutional grievance and multi-disciplinary quorum committee"
-  ];
+  const handleExploreSchemes = () => {
+    onNavigateScholarships();
+  };
 
   return (
-    <div className="min-h-screen bg-white text-[#171717] font-['Manrope'] antialiased selection:bg-[#171717] selection:text-white overflow-x-hidden w-full" style={rootScaleStyle}>
-      
-      {/* 01: Inverted Tabbed Global Header (pinned flush to viewport edges) */}
+    <div
+      className="min-h-screen bg-[#eeeef0] text-[#171717] font-['Manrope'] antialiased selection:bg-[#171717] selection:text-white overflow-x-clip w-full"
+      style={rootScaleStyle}
+    >
       <Header
+        currentView="about"
         language={language}
         onLanguageChange={setLanguage}
         fontScale={fontScale}
@@ -200,599 +180,438 @@ export default function AboutPage({
         onRegister={onNavigateRegister}
       />
 
-      <main className="space-y-16 sm:space-y-24 pb-12 w-full overflow-x-hidden">
-        
-        {/* ========================================================================= */}
-        {/* 02: HERO SECTION (Framer LEROVA "Opening" / Soft Light Panel + Photo)    */}
-        {/* ========================================================================= */}
-        <section className="pt-2 sm:pt-3 px-2 sm:px-4 max-w-[1400px] mx-auto w-full">
-          <div className="flex flex-col gap-3 w-full">
-            
-            {/* Top Light Panel Container matching Framer LEROVA rgb(230, 232, 236) */}
-            <div 
-              className="relative rounded-[24px] sm:rounded-[28px] overflow-hidden min-h-[580px] sm:min-h-[660px] lg:min-h-[700px] flex flex-col justify-between pt-[100px] sm:pt-[120px] pb-8 sm:pb-12 px-6 sm:px-12 lg:px-16 shadow-xs"
-              style={{
-                backgroundColor: 'rgb(230, 232, 236)'
-              }}
-            >
-              {/* Background Art / Concentric Circles Line Graphics */}
-              <div className="absolute right-[-40px] sm:right-[-20px] top-[40px] sm:top-[60px] w-[340px] sm:w-[500px] lg:w-[620px] h-[340px] sm:h-[500px] lg:h-[620px] pointer-events-none opacity-40 overflow-hidden">
-                <svg viewBox="0 0 600 600" className="w-full h-full stroke-black fill-none" strokeWidth="1">
-                  <circle cx="300" cy="300" r="120" strokeDasharray="3 3" />
-                  <circle cx="300" cy="300" r="190" />
-                  <circle cx="300" cy="300" r="260" strokeDasharray="2 6" />
-                  <circle cx="300" cy="300" r="330" />
-                </svg>
+      <main className="w-full">
+        {/* Section 1: Opening Hero + Campus Banner */}
+        <section aria-label="About CertiScholar Hero" className="w-full bg-white">
+          <div className="max-w-[1400px] mx-auto p-3 flex flex-col gap-3">
+            <div className="bg-[linear-gradient(160deg,#F1F1F3_0%,#E3E4E8_55%,#CFD1D8_100%)] rounded-[28px] overflow-hidden relative min-h-[440px] md:min-h-[480px] xl:min-h-[560px] pt-[120px] md:pt-[150px] xl:pt-[190px] px-5 md:px-7 xl:px-9 pb-8 md:pb-10 xl:pb-12 flex flex-col justify-end">
+              {/* Background top-right rotating bloom glyph */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none select-none absolute -top-10 -right-10 md:-top-14 md:-right-14 xl:-top-20 xl:-right-16 w-[260px] h-[260px] md:w-[380px] md:h-[380px] xl:w-[520px] xl:h-[520px]"
+              >
+                <Glyph
+                  shape="bloom"
+                  color="rgba(23,23,23,0.07)"
+                  weight={2.4}
+                  spin={90}
+                  hoverSpin={false}
+                  className="w-full h-full"
+                />
               </div>
 
-              {/* Top Eyebrow + Headline + Description */}
-              <div className="relative z-10 space-y-5 sm:space-y-6 max-w-3xl">
-                
-                {/* Eyebrow Pill matching Framer: + GET TO KNOW LEROVA */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/5 text-[#171717] text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase shadow-2xs font-['Manrope']">
-                  <OrangeSpark />
-                  <span>Get to know CertiScholar</span>
-                </div>
+              {/* Floating book artwork: top-right on mobile/tablet, bottom-right on desktop */}
+              <FloatDown className="pointer-events-none select-none absolute top-[68px] right-4 md:top-[76px] md:right-8 xl:top-auto xl:right-[90px] xl:bottom-[70px] w-[120px] h-[120px] xl:w-[210px] xl:h-[210px] z-10">
+                <Art kind="book" className="w-full h-full" />
+              </FloatDown>
 
-                {/* Master H1 Headline: Matching Framer LEROVA Manrope Medium ~76px */}
-                <h1 className="font-['Manrope'] font-medium text-[38px] min-[400px]:text-[46px] sm:text-[64px] lg:text-[76px] leading-[1.04] tracking-[-0.035em] text-[#171717]">
-                  Learning Should <br className="hidden sm:inline" />
-                  Open Doors, Not <br className="hidden sm:inline" />
-                  Create Barriers.
+              {/* Hero Copy */}
+              <HeroOut className="max-w-[860px] flex flex-col items-start gap-6 relative z-10">
+                <Eyebrow label="Get to know CertiScholar" />
+
+                <h1 className="text-[40px] md:text-[62px] xl:text-[84px] font-medium leading-[1.04] tracking-[-0.055em] text-[#171717]">
+                  Financial Aid Should Open Doors, Not Create Barriers.
                 </h1>
 
-                {/* Subtitle Paragraph */}
-                <p className="text-slate-600 text-[15px] sm:text-[18px] leading-relaxed max-w-2xl font-normal font-['Manrope']">
-                  We believe everyone deserves the opportunity to grow. CertiScholar is built around a simple idea: make university scholarships more accessible, practical, and meaningful for students ready to move forward.
+                <p className="max-w-[560px] text-[15px] md:text-[17px] leading-[1.55] text-[#5f5f66] font-normal">
+                  Built under CS-SRS-002 v3.2 for Lovely Professional University, CertiScholar unifies scheme discovery, pre-flight OCR verification, deterministic eligibility rules, and accountable quorum review.
                 </p>
 
-                {/* Action CTA Button with Framer Dual-Roll Pill */}
-                <div className="pt-2 flex flex-wrap items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onNavigateScholarships();
-                      const el = document.getElementById('our-story');
-                      el?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="group bg-[#171717] hover:bg-[#ff5a2b] text-white font-semibold px-7 py-3.5 rounded-full text-xs sm:text-[13.5px] tracking-tight transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-0.5 cursor-pointer flex items-center gap-2 font-['Manrope'] min-h-[46px]"
-                  >
-                    <span>Explore Our Schemes</span>
-                    <ArrowUpRightIcon />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={onNavigateHome}
-                    className="text-slate-600 hover:text-black text-xs sm:text-[13px] font-medium transition px-3 py-2 cursor-pointer flex items-center gap-1.5"
-                  >
-                    <span>&larr; Back to Home</span>
-                  </button>
-                </div>
-
-              </div>
-
-              {/* Bottom Subtle Institutional Note */}
-              <div className="relative z-10 pt-8 border-t border-black/8 flex flex-wrap items-center justify-between gap-4 text-xs font-semibold text-slate-500 font-['Manrope']">
-                <span>LOVELY PROFESSIONAL UNIVERSITY</span>
-                <span className="text-[#ff5a2b]">STUDENT FINANCIAL AID & SCHOLARSHIPS CELL</span>
-              </div>
-
+                <RollingButton
+                  label="Explore Our Schemes"
+                  variant="dark"
+                  onClick={handleExploreSchemes}
+                />
+              </HeroOut>
             </div>
 
-            {/* Below Hero: Full-Width Rounded Media Banner matching Framer Media > Image */}
-            <div className="w-full rounded-[24px] sm:rounded-[28px] overflow-hidden aspect-[16/9] sm:aspect-[21/9] bg-slate-200 relative shadow-xs">
-              <img
-                src="/images/hero-student-2.jpg"
-                alt="Lovely Professional University students collaborating in campus study hall"
-                className="w-full h-full object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-4 sm:bottom-6 left-5 sm:left-8 text-white font-['Manrope']">
-                <span className="text-xs sm:text-sm font-semibold tracking-wide uppercase opacity-90">
-                  Campus Life • Lovely Professional University
-                </span>
-                <h3 className="text-sm sm:text-lg font-medium opacity-95">
-                  Over 10,000 students verified and funded across academic programs.
-                </h3>
-              </div>
-            </div>
-
+            {/* Clean Campus Banner Image (no text overlay) */}
+            <RevealMedia className="w-full h-[260px] md:h-[400px] xl:h-[540px] rounded-[22px] md:rounded-[28px] overflow-hidden bg-[#e8e8eb]">
+              <ZoomMedia className="w-full h-full">
+                <img
+                  src="/images/hero-student-2.jpg"
+                  alt="Lovely Professional University students collaborating on campus"
+                  className="w-full h-full object-cover object-center"
+                />
+              </ZoomMedia>
+            </RevealMedia>
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* 03: SECTION 2: "Our Story" (Split Layout + Figures / Counter Stats)      */}
-        {/* ========================================================================= */}
-        <section id="our-story" className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-            
-            {/* Left Column: Narrative Headline & Paragraphs */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 text-slate-600 text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                <OrangeSpark />
-                <span>Our story</span>
+        {/* Section 2: Our Story + Counters */}
+        <section id="our-story" className="w-full bg-white py-16 md:py-24 xl:py-28">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-7 xl:px-9 flex flex-col gap-12 md:gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-[0.34fr_0.66fr] gap-6 md:gap-10 items-start">
+              <div>
+                <Eyebrow label="Our story" />
               </div>
 
-              {/* H2 Headline */}
-              <h2 className="font-['Manrope'] font-medium text-[30px] sm:text-[44px] leading-[1.12] tracking-[-0.03em] text-[#171717]">
-                Built on the Belief That Everyone Can Grow.
-              </h2>
-
-              <p className="text-slate-600 text-[15.5px] sm:text-[17px] leading-relaxed font-normal font-['Manrope']">
-                The world is constantly changing, and the ability to learn has never mattered more. CertiScholar is designed to help students navigate that change with relevant knowledge, flexible scholarship experiences, and a clearer path toward their educational goals.
-              </p>
-
-              <p className="text-slate-600 text-[15.5px] sm:text-[17px] leading-relaxed font-normal font-['Manrope']">
-                Whether you’re beginning your first degree, continuing high-level research, or overcoming family financial constraints, we’re here to make your next step feel possible and respected.
-              </p>
-
-              <div className="pt-2 flex items-center gap-3">
-                <button
-                  onClick={onNavigateRegister}
-                  className="bg-[#171717] hover:bg-[#ff5a2b] text-white px-6 py-3 rounded-full text-xs sm:text-[13px] font-semibold transition cursor-pointer flex items-center gap-2"
-                >
-                  <span>Start Your Application</span>
-                  <ArrowUpRightIcon />
-                </button>
-              </div>
-
-            </div>
-
-            {/* Right Column: Figures matching Framer { 01 }, { 02 }, { 03 } */}
-            <div className="lg:col-span-5 space-y-4">
-              
-              {/* Figure 01 */}
-              <div className="bg-[#f4f4f5] rounded-[22px] p-6 sm:p-7 space-y-2 border border-black/4 hover:bg-white hover:shadow-md transition-all duration-300">
-                <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-mono font-medium text-slate-400">
-                    {`{ 01 }`}
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-[#ff5a2b]" />
-                </div>
-                <div className="font-['Manrope'] font-semibold text-[38px] sm:text-[46px] text-[#171717] tracking-tight leading-none">
-                  {counter1}K+
-                </div>
-                <p className="text-[14px] text-slate-600 font-medium">
-                  Active Scholars Evaluated*
-                </p>
-              </div>
-
-              {/* Figure 02 */}
-              <div className="bg-[#f4f4f5] rounded-[22px] p-6 sm:p-7 space-y-2 border border-black/4 hover:bg-white hover:shadow-md transition-all duration-300">
-                <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-mono font-medium text-slate-400">
-                    {`{ 02 }`}
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-[#ff5a2b]" />
-                </div>
-                <div className="font-['Manrope'] font-semibold text-[38px] sm:text-[46px] text-[#171717] tracking-tight leading-none">
-                  {counter2}+
-                </div>
-                <p className="text-[14px] text-slate-600 font-medium">
-                  Merit & Need-Based Schemes*
-                </p>
-              </div>
-
-              {/* Figure 03 */}
-              <div className="bg-[#f4f4f5] rounded-[22px] p-6 sm:p-7 space-y-2 border border-black/4 hover:bg-white hover:shadow-md transition-all duration-300">
-                <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-mono font-medium text-slate-400">
-                    {`{ 03 }`}
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                </div>
-                <div className="font-['Manrope'] font-semibold text-[38px] sm:text-[46px] text-[#171717] tracking-tight leading-none">
-                  {counter3}%
-                </div>
-                <p className="text-[14px] text-slate-600 font-medium">
-                  Verification Accuracy Rate*
-                </p>
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 04: SECTION 3: "Mission & Vision" (Dual Framer Bento Cards)             */}
-        {/* ========================================================================= */}
-        <section className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="space-y-8">
-            
-            {/* Header */}
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 text-slate-600 text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                <OrangeSpark />
-                <span>What drives us</span>
-              </div>
-              <h2 className="font-['Manrope'] font-medium text-[30px] sm:text-[42px] leading-tight text-[#171717] tracking-[-0.03em]">
-                Mission & Vision
-              </h2>
-            </div>
-
-            {/* Bento Cards matching Framer Cards > Card */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Mission Card */}
-              <div className="bg-[#fbfbfc] rounded-[26px] border border-black/8 p-8 sm:p-10 flex flex-col justify-between hover:shadow-lg transition-all duration-300 space-y-6 group">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-block bg-[#cfcbfa]/40 text-[#403359] text-[11.5px] font-mono font-semibold px-3 py-1 rounded-full">
-                      {`{ our mission }`}
+              <div className="flex flex-col gap-5">
+                <ClarityReveal>
+                  <h2 className="text-[25px] md:text-[32px] xl:text-[40px] font-medium leading-[1.18] tracking-[-0.035em] text-[#171717]">
+                    Built on the Belief That Merit Deserves Clarity.{' '}
+                    <span className="text-[#5f5f66]">
+                      CertiScholar brings Lovely Professional University scholarship discovery, structured OCR evidence, and transparent rule evaluation together so students and reviewers work from one shared record.
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-white shadow-xs border border-slate-200/60 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <ArrowUpRightIcon />
+                  </h2>
+                </ClarityReveal>
+
+                <p className="text-[15px] md:text-[16.5px] leading-[1.6] text-[#5f5f66] max-w-[680px]">
+                  Originated under Capstone Project P12 and formalized in CS-SRS-002 v3.2 and DOC-002, the platform pairs client-side quality checks with multi-board marksheet normalization and split-screen verification before committee deliberation begins.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+              {STORY_STATS.map((stat) => (
+                <RiseCard
+                  key={stat.id}
+                  variant={stat.variant}
+                  className="bg-[#f4f4f5] rounded-[22px] p-[22px] md:p-[26px] flex flex-col justify-between gap-10 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[13px] font-medium text-[#52525b] tabular-nums">
+                      {stat.tag}
+                    </span>
+                    <div className="w-[34px] h-[34px] shrink-0">
+                      <Glyph
+                        shape={stat.glyph}
+                        color="#171717"
+                        weight={5}
+                        spin={24}
+                        className="w-full h-full"
+                      />
                     </div>
                   </div>
 
-                  <h3 className="font-['Manrope'] font-semibold text-[24px] sm:text-[28px] text-[#171717] tracking-tight">
+                  <div>
+                    <div className="text-[52px] md:text-[56px] xl:text-[64px] font-medium leading-none tracking-[-0.045em] text-[#171717] tabular-nums">
+                      <CountUpNumber value={stat.value} suffix={stat.suffix} />
+                    </div>
+                    <h3 className="text-[16px] font-medium text-[#171717] mt-3">
+                      {stat.label}
+                    </h3>
+                    <p className="text-[13.5px] text-[#5f5f66] mt-1">
+                      {stat.sublabel}
+                    </p>
+                  </div>
+                </RiseCard>
+              ))}
+            </div>
+
+            <p className="text-[13px] leading-[1.55] text-[#52525b]">
+              * Targets reflect the CS-SRS-002 v3.2 baseline across modules M0 to M20 and Lovely Professional University pilot planning documented in DOC-001 (institutional approval pending).
+            </p>
+          </div>
+        </section>
+
+        {/* Section 3: Mission & Vision */}
+        <section className="w-full bg-[#f4f4f5] py-16 md:py-24 xl:py-28">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-7 xl:px-9 flex flex-col gap-10 md:gap-12">
+            <div className="flex flex-col items-start gap-3">
+              <Eyebrow label="What drives us" />
+              <h2 className="text-[29px] md:text-[38px] xl:text-[46px] font-medium leading-[1.1] tracking-[-0.04em] text-[#171717]">
+                Mission &amp; Vision
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Mission Card */}
+              <RiseCard
+                variant="A"
+                className="bg-white p-2 rounded-[22px] shadow-[0_30px_60px_-40px_rgba(23,23,23,0.25)] group flex flex-col"
+              >
+                <div className="px-4 pt-3 pb-3 flex items-center justify-between">
+                  <span className="text-[13px] font-medium text-[#52525b]">
+                    {`{ our mission }`}
+                  </span>
+                  <ArrowChip className="bg-[#171717]! text-white! border-[#171717]! group-hover:bg-black!" />
+                </div>
+
+                <div className="h-[200px] md:h-[260px] bg-[#f4f4f5] rounded-[16px] flex items-center justify-center overflow-hidden">
+                  <Art kind="cap" className="w-[140px] h-[140px] md:w-[170px] md:h-[170px]" />
+                </div>
+
+                <div className="px-4 pt-5 pb-5 flex flex-col gap-2">
+                  <h3 className="text-[22px] md:text-[26px] font-medium tracking-[-0.03em] text-[#171717]">
                     Our Mission
                   </h3>
-
-                  <p className="text-slate-600 text-[15px] sm:text-[16px] leading-relaxed font-normal">
-                    To make high-quality scholarship assistance more approachable, transparent, and useful—empowering students to build credentials and skills that unlock meaningful opportunities without financial debt.
+                  <p className="text-[15px] leading-[1.6] text-[#5f5f66]">
+                    Replace fragmented scholarship queues at Lovely Professional University with pre-flight document checks, deterministic eligibility scoring, and accountable M5 reviewer verification under DOC-002.
                   </p>
                 </div>
-
-                <div className="space-y-2.5 pt-4 border-t border-black/5">
-                  <div className="flex items-center gap-2.5 text-xs text-slate-700 font-medium">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Equitable fee waivers for first-generation students</span>
-                  </div>
-                  <div className="flex items-center gap-2.5 text-xs text-slate-700 font-medium">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Mobile-first application with instant scan clarity tests</span>
-                  </div>
-                </div>
-              </div>
+              </RiseCard>
 
               {/* Vision Card */}
-              <div className="bg-[#fbfbfc] rounded-[26px] border border-black/8 p-8 sm:p-10 flex flex-col justify-between hover:shadow-lg transition-all duration-300 space-y-6 group">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-block bg-[#bfe9d2]/50 text-[#1f4e38] text-[11.5px] font-mono font-semibold px-3 py-1 rounded-full">
-                      {`{ our vision }`}
-                    </span>
-                    <div className="w-8 h-8 rounded-full bg-white shadow-xs border border-slate-200/60 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <ArrowUpRightIcon />
-                    </div>
-                  </div>
+              <RiseCard
+                variant="B"
+                className="bg-white p-2 rounded-[22px] shadow-[0_30px_60px_-40px_rgba(23,23,23,0.25)] group flex flex-col"
+              >
+                <div className="px-4 pt-3 pb-3 flex items-center justify-between">
+                  <span className="text-[13px] font-medium text-[#52525b]">
+                    {`{ our vision }`}
+                  </span>
+                  <ArrowChip className="bg-[#171717]! text-white! border-[#171717]! group-hover:bg-black!" />
+                </div>
 
-                  <h3 className="font-['Manrope'] font-semibold text-[24px] sm:text-[28px] text-[#171717] tracking-tight">
+                <div className="h-[200px] md:h-[260px] bg-[#f4f4f5] rounded-[16px] flex items-center justify-center overflow-hidden">
+                  <Art kind="bulb" className="w-[140px] h-[140px] md:w-[170px] md:h-[170px]" />
+                </div>
+
+                <div className="px-4 pt-5 pb-5 flex flex-col gap-2">
+                  <h3 className="text-[22px] md:text-[26px] font-medium tracking-[-0.03em] text-[#171717]">
                     Our Vision
                   </h3>
-
-                  <p className="text-slate-600 text-[15px] sm:text-[16px] leading-relaxed font-normal">
-                    A campus world where curiosity is encouraged, educational support is accessible, and every learner with the determination to succeed has the tools and institutional backing to reach their highest potential.
+                  <p className="text-[15px] leading-[1.6] text-[#5f5f66]">
+                    Deliver an auditable university aid infrastructure where every deserving applicant receives timely tuition concessions backed by explainable rules, DPDP Act 2023 custody, and verifiable committee sign-off.
                   </p>
                 </div>
-
-                <div className="space-y-2.5 pt-4 border-t border-black/5">
-                  <div className="flex items-center gap-2.5 text-xs text-slate-700 font-medium">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Zero black-box decisions with 100% explainability</span>
-                  </div>
-                  <div className="flex items-center gap-2.5 text-xs text-slate-700 font-medium">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Cryptographically verified records following students for life</span>
-                  </div>
-                </div>
-              </div>
-
+              </RiseCard>
             </div>
-
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* 05: SECTION 4: "Our Core Values" (5 Framer Values with Custom Glyphs)     */}
-        {/* ========================================================================= */}
-        <section className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="space-y-8">
-            
-            {/* Header matching Framer Core Values */}
-            <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 text-slate-600 text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                <OrangeSpark />
-                <span>Our core values</span>
-              </div>
-              <h2 className="font-['Manrope'] font-medium text-[30px] sm:text-[44px] leading-[1.12] tracking-[-0.03em] text-[#171717]">
-                Five ideas guide everything we make. They shape how we design tools, support learners, and decide what to build next.
-              </h2>
-            </div>
-
-            {/* 5 Value Bento Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {CORE_VALUES.map((val) => (
-                <div 
-                  key={val.id}
-                  className="bg-[#f4f4f5] hover:bg-white rounded-[24px] p-6 sm:p-7 border border-black/4 hover:border-black/10 hover:shadow-md transition-all duration-300 flex flex-col justify-between min-h-[220px] group cursor-default"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-2xl bg-white shadow-2xs border border-slate-200/60 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        {val.glyph}
-                      </div>
-                      <span className="text-[11.5px] font-mono font-medium text-slate-400">
-                        {val.tag}
-                      </span>
-                    </div>
-
-                    <h3 className="font-['Manrope'] font-semibold text-[20px] text-[#171717] tracking-tight pt-1">
-                      {val.title}
-                    </h3>
-
-                    <p className="text-[13.5px] text-slate-600 leading-relaxed font-normal">
-                      {val.desc}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-black/4 flex items-center justify-between text-xs text-slate-400 font-medium">
-                    <span>Guiding Principle</span>
-                    <ArrowUpRightIcon className="w-3 h-3 text-slate-400 group-hover:text-[#ff5a2b] transition-colors" />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 06: SECTION 5: "Our Approach" (Image + Principles List)                  */}
-        {/* ========================================================================= */}
-        <section className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            
-            {/* Left Media Image matching Framer Our Approach > Media */}
-            <div className="lg:col-span-5 rounded-[28px] overflow-hidden aspect-[4/5] bg-slate-200 shadow-sm relative">
-              <img
-                src="/images/step-card.jpg"
-                alt="Student using CertiScholar digital scholarship interface"
-                className="w-full h-full object-cover object-center"
-              />
-              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-800 shadow-sm">
-                Authentic Verification
-              </div>
-            </div>
-
-            {/* Right Content Column */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              <div className="inline-flex items-center gap-2 text-slate-600 text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                <OrangeSpark />
-                <span>Our approach</span>
-              </div>
-
-              <h2 className="font-['Manrope'] font-medium text-[30px] sm:text-[44px] leading-[1.12] tracking-[-0.03em] text-[#171717]">
-                Designed Around Real Life.
-              </h2>
-
-              <p className="text-slate-600 text-[15.5px] sm:text-[17px] leading-relaxed font-normal font-['Manrope']">
-                Scholarship applications should work with your schedule, not against it. That’s why CertiScholar’s verification experience emphasizes flexibility, clear eligibility paths, practical document checks, and steady progress.
-              </p>
-
-              {/* 4 Interactive Principles */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                {APPROACH_PRINCIPLES.map((p, idx) => (
-                  <div 
-                    key={idx}
-                    onClick={() => setActiveApproachTab(idx)}
-                    className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer ${
-                      activeApproachTab === idx 
-                        ? 'bg-white border-[#ff5a2b] shadow-xs' 
-                        : 'bg-[#f4f4f5] border-transparent hover:bg-slate-200/60'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between pb-1">
-                      <span className="font-['Manrope'] font-semibold text-[14.5px] text-[#171717]">
-                        {p.title}
-                      </span>
-                      <span className={`w-2 h-2 rounded-full ${activeApproachTab === idx ? 'bg-[#ff5a2b]' : 'bg-slate-300'}`} />
-                    </div>
-                    <p className="text-xs text-slate-500 leading-relaxed font-normal">
-                      {p.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pt-2 flex items-center gap-4">
-                <button
-                  onClick={onNavigateStudentWorkspace}
-                  className="bg-[#171717] hover:bg-[#ff5a2b] text-white px-7 py-3 rounded-full text-xs sm:text-[13px] font-semibold transition cursor-pointer flex items-center gap-2 font-['Manrope']"
-                >
-                  <span>Discover the Learning Experience</span>
-                  <ArrowUpRightIcon />
-                </button>
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 07: SECTION 6: "Meet Our Team" (4 Portrait Cards)                         */}
-        {/* ========================================================================= */}
-        <section className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="space-y-8">
-            
-            {/* Header matching Framer Team */}
-            <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 text-slate-600 text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                <OrangeSpark />
-                <span>Meet our team</span>
-              </div>
-              <h2 className="font-['Manrope'] font-medium text-[30px] sm:text-[44px] leading-[1.12] tracking-[-0.03em] text-[#171717]">
-                People Who Believe in Possibility. Behind every great learning experience is a team committed to making knowledge more useful, engaging, and accessible.
-              </h2>
-            </div>
-
-            {/* 4 Portrait Cards matching Framer Cell > Default */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {TEAM_MEMBERS.map((m) => (
-                <div 
-                  key={m.name}
-                  className="bg-[#fbfbfc] rounded-[24px] overflow-hidden border border-black/8 hover:shadow-xl transition-all duration-300 flex flex-col group cursor-pointer"
-                >
-                  {/* Portrait with zoom on hover */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-slate-200">
-                    <img
-                      src={m.image}
-                      alt={m.name}
-                      className="w-full h-full object-cover object-top group-hover:scale-106 transition-transform duration-500 ease-out"
-                    />
-                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-mono font-medium text-slate-700 shadow-2xs">
-                      {m.tag}
-                    </div>
-                    <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowUpRightIcon className="w-3 h-3 text-slate-800" />
-                    </div>
-                  </div>
-
-                  {/* Copy below photo */}
-                  <div className="p-5 space-y-1">
-                    <h3 className="font-['Manrope'] font-semibold text-[17px] text-[#171717] tracking-tight">
-                      {m.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-[#ff5a2b]">
-                      {m.role}
-                    </p>
-                    <p className="text-[11.5px] text-slate-500 font-normal">
-                      {m.dept}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* 08: SECTION 7: "Why Learners Choose LEROVA" (Split Row + Checks)         */}
-        {/* ========================================================================= */}
-        <section className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="bg-[#f4f4f5] rounded-[28px] sm:rounded-[32px] p-8 sm:p-14 lg:p-16">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-              
-              {/* Left Column: Heading */}
-              <div className="lg:col-span-6 space-y-4">
-                <div className="inline-flex items-center gap-2 text-slate-600 text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                  <OrangeSpark />
-                  <span>Why learners choose CertiScholar</span>
-                </div>
-                <h2 className="font-['Manrope'] font-medium text-[34px] sm:text-[50px] leading-[1.08] tracking-[-0.035em] text-[#171717]">
-                  A Smarter Way to Keep Growing.
+        {/* Section 4: Core Values */}
+        <section className="w-full bg-white py-16 md:py-24 xl:py-28">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-7 xl:px-9 flex flex-col gap-10 md:gap-14">
+            <div className="flex flex-col items-start gap-4 max-w-[920px]">
+              <Eyebrow label="Our core values" />
+              <ClarityReveal>
+                <h2 className="text-[25px] md:text-[32px] xl:text-[40px] font-medium leading-[1.18] tracking-[-0.035em] text-[#171717]">
+                  Five principles guide every verification and rule.{' '}
+                  <span className="text-[#5f5f66]">
+                    They define how evidence is captured, how low-confidence fields reach human reviewers, and how institutional decisions remain transparent.
+                  </span>
                 </h2>
-                <p className="text-slate-600 text-[15px] sm:text-[16px] leading-relaxed font-normal">
-                  Lovely Professional University’s automated platform replaces anxiety with clarity, bringing institutional trust and dignity to every deserving applicant.
-                </p>
-              </div>
+              </ClarityReveal>
+            </div>
 
-              {/* Right Column: 5 Checklist Items matching Framer */}
-              <div className="lg:col-span-6 space-y-3.5">
-                {WHY_CHOOSE_ITEMS.map((item, idx) => (
-                  <div 
-                    key={idx}
-                    className="bg-white rounded-2xl p-4 sm:p-4.5 border border-black/4 shadow-2xs flex items-center gap-3.5"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-[#ff5a2b] text-white flex items-center justify-center shrink-0">
-                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+              {CORE_VALUES.map((val) => (
+                <RiseCard key={val.id} variant={val.variant}>
+                  <div className="h-[270px] md:h-[300px] xl:h-[340px] rounded-[22px] bg-[#f4f4f5] hover:bg-[#171717] p-[28px_20px] transition-all duration-500 group relative overflow-hidden flex flex-col items-center text-center justify-between">
+                    <div className="flex flex-col items-center gap-4 pt-1">
+                      <div className="w-[58px] h-[58px] text-[#171717] group-hover:text-white transition-colors duration-500">
+                        <Glyph
+                          shape={val.shape}
+                          color="currentColor"
+                          weight={5}
+                          spin={24}
+                          className="w-full h-full"
+                        />
+                      </div>
+
+                      <h3 className="text-[18px] font-medium tracking-[-0.025em] text-[#171717] group-hover:text-white transition-colors duration-500">
+                        {val.title}
+                      </h3>
+
+                      <p className="text-[13.5px] leading-[1.5] text-[#5f5f66] group-hover:text-white/78 transition-colors duration-500">
+                        {val.desc}
+                      </p>
                     </div>
-                    <span className="font-['Manrope'] font-medium text-[14px] sm:text-[15px] text-[#171717]">
-                      {item}
+
+                    <span className="opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 text-[12px] font-medium px-3 py-1 rounded-full bg-white/15 text-white">
+                      {val.tag}
                     </span>
                   </div>
+                </RiseCard>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5: Our Approach */}
+        <section className="w-full bg-[#f4f4f5] py-16 md:py-24 xl:py-28">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-7 xl:px-9">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 xl:gap-14 items-center">
+              <div className="md:col-span-5">
+                <RevealMedia className="w-full h-[340px] md:h-[460px] xl:h-[560px] rounded-[24px] overflow-hidden bg-[#e8e8eb]">
+                  <ZoomMedia className="w-full h-full">
+                    <img
+                      src="/images/step-card.jpg"
+                      alt="Student reviewing verified scholarship application documents"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </ZoomMedia>
+                </RevealMedia>
+              </div>
+
+              <div className="md:col-span-7 flex flex-col items-start gap-6">
+                <Eyebrow label="Our approach" />
+
+                <h2 className="text-[36px] md:text-[52px] xl:text-[68px] font-medium leading-[1.06] tracking-[-0.045em] text-[#171717]">
+                  Designed Around Real Governance.
+                </h2>
+
+                <p className="text-[15.5px] md:text-[17px] leading-[1.6] text-[#5f5f66] max-w-[600px]">
+                  Scholarship governance demands traceable policy execution, not guesswork. CertiScholar encodes university circulars into versioned rulesets, flags low-confidence OCR fields for split-screen review, and records quorum votes in an immutable audit trail.
+                </p>
+
+                <div className="flex flex-wrap gap-2.5">
+                  {APPROACH_CHIPS.map((chip) => (
+                    <span
+                      key={chip}
+                      className="bg-white text-[#171717] text-[13.5px] font-medium px-4 py-2 rounded-full border border-black/6 shadow-[0_6px_18px_-10px_rgba(23,23,23,0.18)]"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+
+                <RollingButton
+                  label="Open Student Portal"
+                  variant="dark"
+                  onClick={onNavigateStudentWorkspace}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 6: Governance & Project Stakeholders */}
+        <section className="w-full bg-white py-16 md:py-24 xl:py-28">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-7 xl:px-9 flex flex-col gap-12 md:gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-[0.34fr_0.66fr] gap-6 md:gap-10 items-start">
+              <div>
+                <Eyebrow label="Project stakeholders" />
+              </div>
+
+              <ClarityReveal>
+                <h2 className="text-[25px] md:text-[32px] xl:text-[40px] font-medium leading-[1.18] tracking-[-0.035em] text-[#171717]">
+                  People Accountability Over Black-Box Automation.{' '}
+                  <span className="text-[#5f5f66]">
+                    Every automated extraction and eligibility score remains answerable to designated SRS 2.4 roles across system design, verification, policy governance, and quorum sign-off.
+                  </span>
+                </h2>
+              </ClarityReveal>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+              {STAKEHOLDERS.map((person) => (
+                <RiseCard
+                  key={person.name}
+                  variant={person.variant}
+                  className="bg-[#f4f4f5] hover:bg-[#e8e8eb] p-2 rounded-[22px] group transition-colors duration-300 flex flex-col"
+                >
+                  <div className="px-3 pt-2.5 pb-2.5 flex items-center justify-between">
+                    <span className="text-[12.5px] font-medium text-[#52525b]">
+                      {person.tag}
+                    </span>
+                    <ArrowChip />
+                  </div>
+
+                  <div className="h-[320px] w-full rounded-[16px] overflow-hidden bg-[#e8e8eb]">
+                    <img
+                      src={person.image}
+                      alt={person.name}
+                      className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-[1.06] transition-all duration-700"
+                    />
+                  </div>
+
+                  <div className="px-3 pt-4 pb-3">
+                    <h3 className="text-[18px] font-medium tracking-[-0.025em] text-[#171717]">
+                      {person.name}
+                    </h3>
+                    <p className="text-[13.5px] text-[#5f5f66] mt-0.5">
+                      {person.role}
+                    </p>
+                  </div>
+                </RiseCard>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 7: Why Institutions Choose CertiScholar */}
+        <section className="w-full bg-[#f4f4f5] py-16 md:py-24 xl:py-28">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-7 xl:px-9">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 xl:gap-14 items-start">
+              <div className="md:col-span-5 flex flex-col items-start gap-5">
+                <Eyebrow label="Why institutions choose CertiScholar" />
+
+                <h2 className="text-[30px] md:text-[40px] xl:text-[48px] font-medium leading-[1.08] tracking-[-0.04em] text-[#171717]">
+                  A Smarter Way to Verify Aid.
+                </h2>
+
+                <Art
+                  kind="medal"
+                  className="w-[120px] h-[120px] md:w-[160px] md:h-[160px] xl:w-[180px] xl:h-[180px] mt-2"
+                />
+              </div>
+
+              <div className="md:col-span-7 flex flex-col gap-3">
+                {INSTITUTION_REASONS.map((reason) => (
+                  <div
+                    key={reason}
+                    className="bg-white rounded-[16px] p-[18px] flex items-center gap-4 border border-black/5"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="w-[30px] h-[30px] rounded-full bg-[#171717] text-white flex items-center justify-center shrink-0"
+                    >
+                      <Check className="w-4 h-4 stroke-[2.2]" />
+                    </div>
+                    <p className="text-[15px] font-medium leading-[1.45] text-[#171717]">
+                      {reason}
+                    </p>
+                  </div>
                 ))}
               </div>
-
             </div>
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* 09: SECTION 8: "Closing CTA" (Framer Luxury Dark Banner with Orbit Rings)  */}
-        {/* ========================================================================= */}
-        <section className="max-w-[1400px] mx-auto px-2 sm:px-4">
-          <div 
-            className="w-full rounded-[24px] sm:rounded-[32px] overflow-hidden min-h-[460px] sm:min-h-[520px] p-8 sm:p-14 lg:p-16 relative flex items-center justify-center shadow-2xl text-center"
-            style={{
-              backgroundColor: 'rgb(22, 23, 27)'
-            }}
-          >
-            {/* Concentric Rotating Orbit Rings matching Framer Closing CTA > Orbit */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30 flex items-center justify-center">
-              <svg viewBox="-700 -700 1400 1400" className="w-[1200px] h-[1200px]">
-                <circle r="180" fill="none" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1" />
-                <circle r="320" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="1.5" strokeDasharray="4 8" />
-                <circle r="480" fill="none" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="1" />
-                <circle r="640" fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" strokeDasharray="2 12" />
-              </svg>
-            </div>
-
-            {/* Soft Ambient Radial Spotlight in Center */}
-            <div 
-              className="absolute w-[400px] h-[400px] rounded-full pointer-events-none opacity-20 blur-3xl"
-              style={{
-                background: 'radial-gradient(circle, #ff5a2b 0%, transparent 70%)'
-              }}
-            />
-
-            {/* Central Callout Content */}
-            <div className="relative z-10 space-y-6 max-w-2xl mx-auto text-white">
-              
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-[11px] sm:text-[12px] font-semibold tracking-[0.08em] uppercase font-['Manrope']">
-                <OrangeSpark />
-                <span>Start today</span>
-              </div>
-
-              <h2 className="font-['Manrope'] font-medium text-[34px] sm:text-[52px] leading-[1.08] tracking-[-0.035em] text-white">
-                Your Next Opportunity Starts With Learning.
-              </h2>
-
-              <p className="text-white/70 text-[15px] sm:text-[17px] leading-relaxed max-w-xl mx-auto font-normal font-['Manrope']">
-                Discover a scholarship scheme, verify your credentials in minutes, and take a meaningful step toward your degree.
-              </p>
-
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={onNavigateRegister}
-                  className="bg-white hover:bg-[#ff5a2b] text-[#171717] hover:text-white font-semibold px-8 py-3.5 rounded-full text-xs sm:text-[14px] tracking-tight transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer flex items-center gap-2 font-['Manrope'] min-h-[46px]"
+        {/* Section 8: Closing CTA */}
+        <section className="w-full bg-white rounded-b-[28px] pt-4 md:pt-6 pb-3 px-3">
+          <div className="max-w-[1400px] mx-auto">
+            <SheetSection>
+              <div className="bg-[linear-gradient(180deg,#F5F6F9_0%,#D3D6E0_42%,#8A90A5_100%)] rounded-[22px] md:rounded-[28px] py-[84px] md:py-[120px] xl:py-[150px] px-3.5 md:px-6 relative overflow-hidden flex items-center justify-center">
+                {/* Background concentric orbit rings */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 pointer-events-none flex items-center justify-center"
                 >
-                  <span>Find Your Scheme</span>
-                  <ArrowUpRightIcon />
-                </button>
+                  <OrbitRings rings={5} speed={90} className="w-full h-full" />
+                </div>
 
-                <button
-                  type="button"
-                  onClick={onNavigateHome}
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/15 font-medium px-6 py-3.5 rounded-full text-xs sm:text-[13px] transition cursor-pointer font-['Manrope'] min-h-[46px]"
-                >
-                  Back to Home
-                </button>
+                {/* Centered massive dark halo ring */}
+                <div
+                  aria-hidden="true"
+                  className="w-[330px] h-[330px] border-[26px] md:w-[540px] md:h-[540px] md:border-[40px] xl:w-[620px] xl:h-[620px] xl:border-[46px] rounded-full border-[#16171B] shadow-[0_40px_80px_-20px_rgba(22,23,27,0.55)] absolute pointer-events-none"
+                />
+
+                {/* Floating white CTA card */}
+                <div className="max-w-[430px] w-full bg-white rounded-[20px] p-[30px_20px_18px] md:p-[36px_28px_24px] shadow-[0_30px_70px_-24px_rgba(22,23,27,0.45)] relative z-10 text-center flex flex-col items-center gap-4">
+                  <Eyebrow label="Start today" />
+
+                  <h2 className="text-[25px] md:text-[30px] font-medium leading-[1.15] tracking-[-0.035em] text-[#171717]">
+                    Transparent Aid Starts With Proof.
+                  </h2>
+
+                  <p className="text-[14.5px] leading-[1.55] text-[#5f5f66]">
+                    Explore eligible LPU scholarship schemes, validate your marksheets before submission, and track every verification step in one place.
+                  </p>
+
+                  <div className="w-full pt-1">
+                    <RollingButton
+                      label="Explore Schemes"
+                      variant="soft"
+                      className="w-full justify-center"
+                      onClick={onNavigateRegister}
+                    />
+                  </div>
+                </div>
               </div>
-
-            </div>
-
+            </SheetSection>
           </div>
         </section>
-
       </main>
 
-      {/* 10: Global Institutional Footer */}
       <Footer
-        onExploreClick={onNavigateHome}
-        onLoginClick={onNavigateLogin}
-        onRegisterClick={onNavigateRegister}
+        onNavigateHome={onNavigateHome}
+        onNavigateLogin={onNavigateLogin}
+        onNavigateRegister={onNavigateRegister}
       />
-
     </div>
   );
 }

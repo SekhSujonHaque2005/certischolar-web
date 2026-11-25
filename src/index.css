@@ -2,20 +2,38 @@
 
 @theme {
   --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans--font-feature-settings: 'blwf' on, 'cv03' on, 'cv04' on, 'cv09' on, 'cv11' on;
   --font-serif: 'Bodoni Moda', Georgia, serif;
 }
 
 body {
   font-family: var(--font-sans);
+  font-feature-settings: 'blwf' on, 'cv03' on, 'cv04' on, 'cv09' on, 'cv11' on;
   background-color: #ffffff;
   color: #171717;
   overflow-x: hidden;
 }
 
-/* Framer LEROVA Custom Ease & Timing */
+.font-manrope-features {
+  font-family: var(--font-sans);
+  font-feature-settings: 'blwf' on, 'cv03' on, 'cv04' on, 'cv09' on, 'cv11' on;
+}
+
+/* Framer LEROVA Custom Ease & Timing + Semantic Surface Tokens */
 :root {
   --framer-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --framer-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --cs-surface-root: #eeeef0;
+  --cs-surface-fog: #f4f4f5;
+  --cs-surface-fog-deep: #e8e8eb;
+  --cs-ink: #171717;
+  --cs-text: #5f5f66;
+  --cs-muted: #52525b;
+  --cs-accent: #ff5a2b;
+  --cs-lilac: #cfcbfa;
+  --cs-mint: #bfe9d2;
+  --cs-butter: #ffe08a;
+  --cs-ring: #16171b;
 }
 
 /* Entrance Animations */
